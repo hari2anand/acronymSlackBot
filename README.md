@@ -1,6 +1,6 @@
 # iWonder Slack Bot
 
-iWonder is the Slack bot, developed to ease the search of Jargons, acronyms and abbreviated terms, for eg., GCS is the term which a commoner find hard to understand unless is told about the expanded form "Google Cloud Platform"! This slack Bot helps the user to understand such acronyms.
+iWonder is the Slack bot, developed to ease the search of Jargons, acronyms and abbreviated terms, for eg., GCS is the term which a commoner find hard to understand unless is told about the expanded form "Google Cloud Storage"! This slack Bot helps the user to understand such acronyms.
 
 ## Usage
 
