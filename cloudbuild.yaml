@@ -1,0 +1,41 @@
+#Run with gcloud builds submit  . --config=cloudbuild.yaml
+
+#Build Step Substitutions
+substitutions:
+  _TIME_OUT_: "540"
+  _GCP_PROJECT_: "PROJECT NAME"
+  _REGION_: "us-central1"
+  _DICT_URL_: "https://od-api.oxforddictionaries.com/api/v2/entries"
+  _FS_COLLECTION_NAME_: "FIRESTORE COLLECTION NAME"
+  _FS_COLLECTION_IDENTIFIER_: "FIRESTORE IDENTIFIER"
+
+#Build Steps
+steps:
+  #Set Cloud Project ID
+  - name: gcr.io/cloud-builders/gcloud
+    args: ["config", "set", "project", "${_GCP_PROJECT_}"]
+    id: "set-gcp-id"
+
+  - name: gcr.io/cloud-builders/gcloud
+    entrypoint: "bash"
+    args:
+      [
+        "-c",
+        "gcloud functions deploy ocSlackBot --quiet  --runtime nodejs8 --source=./app/
+        --trigger-http --entry-point=ocSlackBot --timeout=${_TIME_OUT_} --allow-unauthenticated
+        --region=${_REGION_} --service-account=$$SERVICEACCOUNT
+        --set-env-vars=SLACK_APP_TOKEN=$$TOKENSECRET,DICT_URL=${_DICT_URL_},DICT_APPID=$$DICT_APPID,DICT_KEY=$$DICT_KEY,SLACK_WEBHOOK=$$SLACK_WEBHOOK,SLACK_CHANNEL_ID=$$SLACK_CHANNEL_ID,FS_COLLECTION_NAME=${_FS_COLLECTION_NAME_},FS_COLLECTION_IDENTIFIER=${_FS_COLLECTION_IDENTIFIER_}",
+      ]
+    secretEnv: ["SERVICEACCOUNT", "TOKENSECRET", "DICT_APPID", "DICT_KEY", "SLACK_WEBHOOK", "SLACK_CHANNEL_ID"]
+    waitFor: ["set-gcp-id"]
+
+#Secrets to get decrypt
+secrets:
+  - kmsKeyName: projects/$PROJECT/locations/europe-west4/keyRings/KEYRINGNAME/cryptoKeys/KEYNAME
+    secretEnv:
+      SERVICEACCOUNT: CiQAqokoKWpW6/4wxKFDoqaGVjGCGuyhLmT3fUy8/x4gVhMzc8gSaQAskqfMAvHR0c3Fm/gvzfJdeeiZy78bVPNXBMVCXUPPvs0xs1I8KpN5rFy76I1xfsE9U9YRQ4FbilT99zUnjZic+Sg/w6mpM8yJ8te/et/ZKeQzEgTCsYrp0kcoC3AgAw3v++LJU5dPhA==
+      TOKENSECRET: CiQAqokoKZUyEG7AeBaAVdUqcuztngnYegG9azylWNdsl46VOXcSQQAskqfMLEUO0ol0IZ6hJ4Dghup8o9fPINlax+MIBKFBTX+kIggMnPcJ+7pzwvqB7borKkI9lKXpYCPpsTq4/tKK
+      DICT_APPID: CiQAqokoKcqW6fktM5OUfl1EqXwnhfKi252WeVi4wbXrB0+2TSwSMQAskqfMiXJUavzKHDWPtVUtbGe3xL9GQ9UhTwbnHG0pa1hKF1g4somrgUMxl+VWE9E=
+      DICT_KEY:  CiQAqokoKcP2WEWOizjMwXILjc76TIH+mDba5cOWkDlt2EJl+kESSQAskqfMpLXQIwe+vh9tQG+cFuSSarjSxgSNDhzYt0hDytEsvgRqH1awt5IFmZHTyNZoKwcQHBFZx8vKcErrMPuSjeLHt64MzYs=
+      SLACK_WEBHOOK: CiQAqokoKWBhyY0uSmShAAxscCHTcqqu4hZGHpGYxMrweHBCBkASeAAskqfM3wv//DfYNPmfBi7ydntG6uU5d9fX76DnH/44hOZmOpLJnkCE+FYKnAbUM1Icuq1FHtsixKj8qD5bvvSxz6Zxvpbqd7lYHxuzdf8cH9l57ZboMbX8cVza2iznAtspdN7JPQd+RSt/ZJg4MW9dKKswIagSpA==
+      SLACK_CHANNEL_ID: CiQAqokoKbEGS6WWHAcBW/ON9cXnF0Vs0NqNdpMrLkXB3wxDkEwSNAAskqfMQKmd8bDSneZ+6hor6YrdssycY6g1Pm+NPgRr2gr2HrzfKF+qv/EdGq0KLUFFnZY=

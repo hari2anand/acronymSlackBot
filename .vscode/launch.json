@@ -1,0 +1,21 @@
+{
+  // Use IntelliSense to learn about possible attributes.
+  // Hover to view descriptions of existing attributes.
+  // For more information, visit: https://go.microsoft.com/fwlink/?linkid=830387
+  "version": "0.2.0",
+  "configurations": [{
+    "type": "node",
+    "request": "launch",
+    "name": "Launch Program",
+    "skipFiles": ["<node_internals>/**"],
+    "program": "${workspaceFolder}/localdebugger.js",
+    "env": {
+      "SLACK_APP_TOKEN": "Test_GitToken",
+      "GCS_BUCKET_NAME": "Test-bucket",
+      "ACRONYM_FILE": "Test_File.json",
+      "DICT_URL":"https://od-api.oxforddictionaries.com/api/v2/entries",
+      "DICT_APPID":"Test_ID",
+      "DICT_KEY":"Test_Key"
+    }
+  }]
+}

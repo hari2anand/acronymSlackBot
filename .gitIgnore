@@ -1,0 +1,14 @@
+#ignore Node_modules
+node_modules/
+app/node_modules/
+
+#ignore Editor Files
+#.vscode/
+.DS_Store
+.idea
+
+#ignore local test & debug files
+#localdebugger.js
+#/package.json
+#/package-lock.json
+cloudbuildcopy.yaml
